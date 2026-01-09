@@ -2,5 +2,5 @@
  función que devuelva una línea desde un descriptor de archivo (file descriptor) usando un buffer de tamaño variable 
 
 
-¡PENDIENTE test2!
-Si no tiene salto de linea en una sola linea hace algo raro
+¡Pendiente!
+NI siquierda debería de funcionar!!!!!! Strlcat concatena, pero no redimensiona. Yo qu ese donde leches escribe!!!!!!

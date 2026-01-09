@@ -6,7 +6,7 @@
 /*   By: sekhudol <sekhudol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:49:28 by sekhudol          #+#    #+#             */
-/*   Updated: 2026/01/08 22:52:13 by sekhudol         ###   ########.fr       */
+/*   Updated: 2026/01/09 21:04:39 by sekhudol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 #include <string.h>
 
 #include "get_next_line.h"
-
-#define BUFFER_SIZE 5
 
 char	*get_next_line(int fd)
 {
@@ -53,15 +51,16 @@ char	*get_next_line(int fd)
 		// Si encontramos un salto de linea acaba el bucle y haz un caso especial.
 		if (str_restante)
 			break;
-		
+
 		// Si se lee 0 bytes hay que devolver un NULL
-		if (leidos == 0)
+		if (leidos == 0 && !ft_strlen(str_resultado))
 			return (NULL);
 		
 		// Si se lee menos que el BUFFER_SIZE es que estamos al final del fichero.
 		if (leidos < BUFFER_SIZE)
 		{
 			ft_strlcat(str_resultado, buffer, ft_strlen(str_resultado) + leidos + 1);
+			str_previo[0] = '\0';
 			return str_resultado;
 		}
 
@@ -75,7 +74,8 @@ char	*get_next_line(int fd)
 	
 	// Debemos guardar el restante para usarlo en como str inicial en la siguiente llamada
 	str_restante++; // Primero avanzamos el \n
-	ft_strlcpy(str_previo, str_restante, ft_strlen(str_restante)+1);
+	if(leidos == BUFFER_SIZE) // Si se lee menos que el buffer es que estamos en el final(No necesito restante ya!)
+		ft_strlcpy(str_previo, str_restante, ft_strlen(str_restante)+1);
 
 	return str_resultado;
 }
