@@ -9,7 +9,7 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/gnl",
-			"args": ["<", "/home/sergio/Documents/c_42_get_next_line/text.txt"],
+			"args": ["<", "/home/sergio/Documents/c_42_get_next_line/test4.txt"],
 			"stopAtEntry": true,
 			"cwd": "${workspaceFolder}",
 			"environment": [],

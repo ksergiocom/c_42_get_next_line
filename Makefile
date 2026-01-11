@@ -7,11 +7,17 @@ all: $(NAME)
 $(NAME): get_next_line.c get_next_line_utils.c
 	$(CC) $(CFLAGS) get_next_line.c get_next_line_utils.c -o $(NAME)
 
-test: clean $(NAME)
-	./$(NAME) < text.txt
+test1: clean $(NAME)
+	./$(NAME) < test1.txt
 
 test2: clean $(NAME)
-	./$(NAME) < text2.txt
+	./$(NAME) < test2.txt
+
+test3: clean $(NAME)
+	./$(NAME) < test3.txt
+
+test4: clean $(NAME)
+	./$(NAME) < test4.txt
 
 clean:
 	rm -rf *.o ./a.out

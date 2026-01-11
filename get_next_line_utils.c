@@ -6,7 +6,7 @@
 /*   By: sekhudol <sekhudol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 19:56:00 by sekhudol          #+#    #+#             */
-/*   Updated: 2026/01/09 21:04:59 by sekhudol         ###   ########.fr       */
+/*   Updated: 2026/01/10 22:51:50 by sekhudol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,39 +23,6 @@ size_t	ft_strlen(const char *s)
 		i++;
 	}
 	return (i);
-}
-
-char	*ft_strlchr(const char *s, int c, size_t size)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < size && *s)
-	{
-		if (*s == (unsigned char)c)
-			return ((char *)s);
-		s++;
-		i++;
-	}
-	if ((char) c == '\0' && i < size)
-		return ((char *)s);
-	return (NULL);
-}
-
-size_t	ft_strlcpy(char *dest, const char *src, size_t dsize)
-{
-	size_t	i;
-
-	if (dsize == 0)
-		return (ft_strlen(src));
-	i = 0;
-	while (i < dsize - 1 && src[i])
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (ft_strlen(src));
 }
 
 size_t	ft_strlcat(char *dst, const char *src, size_t size)
@@ -81,4 +48,60 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 	}
 	dst[i] = '\0';
 	return (final_len);
+}
+
+size_t	ft_strlcpy(char *dest, const char *src, size_t dsize)
+{
+	size_t	i;
+
+	if (dsize == 0)
+		return (ft_strlen(src));
+	i = 0;
+	while (i < dsize - 1 && src[i])
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (ft_strlen(src));
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	while (*s)
+	{
+		if (*s == (unsigned char)c)
+			return ((char *)s);
+		s++;
+	}
+	if ((char) c == '\0')
+		return ((char *)s);
+	return (NULL);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	int		j;
+	int		str1_len;
+	int		str2_len;
+	char	*joined;
+
+	j = 0;
+	str1_len = ft_strlen(s1);
+	str2_len = ft_strlen(s2);
+	joined = malloc((str1_len + str2_len + 1) * sizeof(char));
+	if (!joined)
+		return (NULL);
+	while (*s1)
+	{
+		joined[j] = *s1++;
+		j++;
+	}
+	while (*s2)
+	{
+		joined[j] = *s2++;
+		j++;
+	}
+	joined[j] = '\0';
+	return (joined);
 }
