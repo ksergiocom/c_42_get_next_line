@@ -1,23 +1,25 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -D BUFFER_SIZE=5
+CFLAGS = -Wall -Wextra -Werror -g -D BUFFER_SIZE=6
 NAME = gnl
 
 all: $(NAME)
 
-$(NAME): get_next_line.c get_next_line_utils.c
-	$(CC) $(CFLAGS) get_next_line.c get_next_line_utils.c -o $(NAME)
+$(NAME): main.c get_next_line.c get_next_line_utils.c
+	$(CC) $(CFLAGS) main.c get_next_line.c get_next_line_utils.c -o $(NAME)
 
-test1: clean $(NAME)
+test: clean $(NAME)
+	@echo "===== TEST 1 ====="
 	./$(NAME) < test1.txt
-
-test2: clean $(NAME)
+	@echo
+	@echo "===== TEST 2 ====="
 	./$(NAME) < test2.txt
-
-test3: clean $(NAME)
+	@echo
+	@echo "===== TEST 3 ====="
 	./$(NAME) < test3.txt
-
-test4: clean $(NAME)
+	@echo
+	@echo "===== TEST 4 ====="
 	./$(NAME) < test4.txt
+
 
 clean:
 	rm -rf *.o ./a.out
@@ -28,4 +30,4 @@ fclean: clean
 re: fclean all
 
 valgrind:
-	valgrind --leak-check=full ./$(NAME)
+	valgrind --leak-check=full ./$(NAME) < test3.txt

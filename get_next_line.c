@@ -6,7 +6,7 @@
 /*   By: sekhudol <sekhudol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 21:58:47 by sekhudol          #+#    #+#             */
-/*   Updated: 2026/01/11 16:04:24 by sekhudol         ###   ########.fr       */
+/*   Updated: 2026/01/11 23:54:16 by sekhudol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,19 @@ char *get_next_line(int fd)
 	static char	*leftover;
 	char		*tmp;
 	char		*str;
+	char		*str_with_linebreak;
 	int			bytes;
 
 	// Buffer para leer.
 	buffer = malloc(BUFFER_SIZE + 1);
 	
 	// Inicializando la linea (¿Exisita restos de anterior llamada?)
-	if (leftover && ft_strlen(leftover))
+	if (leftover)
 	{
 		str = malloc(ft_strlen(leftover) + 1);
 		ft_strlcpy(str, leftover, ft_strlen(leftover) + 1);
 		free(leftover);
+		leftover = NULL;
 	}
 	else
 	{
@@ -50,54 +52,50 @@ char *get_next_line(int fd)
 		bytes = read(fd, buffer, BUFFER_SIZE);
 		buffer[bytes] = '\0';
 
-		char *str_con_salto = ft_strchr(buffer, '\n');
-		if (str_con_salto)
-		{
-			// Nueva string concatenada hasta el \n
-			tmp = malloc(ft_strlen(str) + ft_strlen(buffer) + 1);
-			ft_strlcpy(tmp, str, ft_strlen(str) + 1);
-			ft_strlcat(tmp, buffer, ft_strlen(str) + ft_strlen(buffer) - ft_strlen(str_con_salto) + 2);
-			// Guardar el restante para siguiente llamada de GNL
-			leftover = malloc(ft_strlen(str_con_salto));
-			str_con_salto++;
-			ft_strlcpy(leftover, str_con_salto, ft_strlen(str_con_salto) + 1);
-			free(str);
-			str = tmp;
-			break;
-		}
-
-		if (!bytes && !ft_strlen(str))
+		// EOF y nada restante
+		if(!bytes && !ft_strlen(str))
 		{
 			free(str);
+			free(buffer);
 			return (NULL);
 		}
 
-		if (bytes < BUFFER_SIZE)
-			break;
-
-		tmp = malloc(ft_strlen(str) + ft_strlen(buffer));
+		// Juntamos str+buffer en un string nuevo
+		tmp = malloc(ft_strlen(str) + ft_strlen(buffer) + 1);
 		ft_strlcpy(tmp, str, ft_strlen(str) + 1);
+		ft_strlcat(tmp, buffer, ft_strlen(str) + ft_strlen(buffer) + 1);
 		free(str);
-		ft_strlcat(tmp, buffer, ft_strlen(tmp) + ft_strlen(buffer) + 1);
 		str = tmp;
+
+		// Comprobamos si hay \n
+		str_with_linebreak = ft_strchr(str, '\n');
+		if(str_with_linebreak)
+		{
+			// Guardamos en str la parte anterior a \n con el \n
+			tmp = malloc(ft_strlen(str) - ft_strlen(str_with_linebreak) + 2);
+			ft_strlcpy(tmp, str, ft_strlen(str) - ft_strlen(str_with_linebreak) + 2);
+
+			// Guardamos todo lo que va despues de \n en leftover
+			str_with_linebreak++;
+			leftover = malloc(ft_strlen(str_with_linebreak) + 1);
+			ft_strlcpy(leftover, str_with_linebreak, ft_strlen(str_with_linebreak) + 1);
+			free(str);
+			str = tmp;
+
+			// Salimos del loop y devolvemos el str
+			break;
+		}
+		
+		// Comprobamos cuanto se ha leido
+		if (bytes < BUFFER_SIZE)
+		{
+			break;
+		}
 	}
 
 	free(buffer);
+	buffer = NULL;
 
 	return str;
 }
 
-int main()
-{
-	char *str = malloc(10000);
-	for(int i=0; i < 6; i++)
-	{
-		str = get_next_line(0);
-		if(str)
-			printf("%s", str);
-		else
-			printf("%p", str);
-	}
-	free(str);
-	return (0);
-}
