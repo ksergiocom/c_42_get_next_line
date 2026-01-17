@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -D BUFFER_SIZE=6
+CFLAGS = -Wall -Wextra -Werror -g -D BUFFER_SIZE=-1
 NAME = gnl
 
 all: $(NAME)

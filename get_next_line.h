@@ -6,9 +6,17 @@
 /*   By: sekhudol <sekhudol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 14:14:20 by sekhudol          #+#    #+#             */
-/*   Updated: 2026/01/10 22:51:57 by sekhudol         ###   ########.fr       */
+/*   Updated: 2026/01/17 16:55:01 by sekhudol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <stdlib.h>
+
+typedef struct str_s
+{
+	char *str;
+	char *str_with_linebreak;
+} str_struct;
 
 char	*get_next_line(int fd);
 size_t	ft_strlen(const char *s);

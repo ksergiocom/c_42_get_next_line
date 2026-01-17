@@ -6,7 +6,7 @@
 /*   By: sekhudol <sekhudol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 21:58:47 by sekhudol          #+#    #+#             */
-/*   Updated: 2026/01/12 00:58:10 by sekhudol         ###   ########.fr       */
+/*   Updated: 2026/01/17 17:08:23 by sekhudol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,31 +63,47 @@ void	handle_leftover(char **str, char **leftover)
 	}
 }
 
-char	*get_next_line(int fd)
-{
-	char		*buffer;
-	static char	*leftover;
-	char		*str;
-	char		*str_with_linebreak;
-	int			bytes;
+int	twentyfive_lines_stuff(int fd,
+	char **buffer,
+	char **leftover,
+	str_struct *str_used)
+{	
+	int bytes;
 
-	buffer = malloc(BUFFER_SIZE + 1);
-	handle_leftover(&str, &leftover);
 	while (1)
 	{
-		bytes = read(fd, buffer, BUFFER_SIZE);
-		buffer[bytes] = '\0';
-		if (!bytes && !ft_strlen(str))
-			return (free(str), free(buffer), NULL);
-		str = join_buffer(&str, buffer);
-		str_with_linebreak = ft_strchr(str, '\n');
-		if (str_with_linebreak)
+		bytes = read(fd, *buffer, BUFFER_SIZE);
+		(*buffer)[bytes] = '\0';
+		if (!bytes && !ft_strlen(str_used->str))
 		{
-			str = join_linebreak(&str, str_with_linebreak, &leftover);
+			free(str_used->str);
+			free(*buffer);
+			return (1);
+		}
+		str_used->str = join_buffer(&(str_used->str), *buffer);
+		str_used->str_with_linebreak = ft_strchr(str_used->str, '\n');
+		if (str_used->str_with_linebreak)
+		{
+			str_used->str = join_linebreak(&(str_used->str), str_used->str_with_linebreak, leftover);
 			break ;
 		}
 		if (bytes < BUFFER_SIZE)
 			break ;
 	}
-	return (free(buffer), str);
+	return (0);
+}
+
+char	*get_next_line(int fd)
+{
+	char		*buffer;
+	static char	*leftover;
+	str_struct str_used;
+
+	if(read(fd, NULL, 0) < 0)
+		return (NULL);
+	buffer = malloc(BUFFER_SIZE + 1);
+	handle_leftover(&(str_used.str), &leftover);
+	if(twentyfive_lines_stuff(fd, &buffer, &leftover, &str_used))
+		return (NULL);
+	return (free(buffer), str_used.str);
 }
